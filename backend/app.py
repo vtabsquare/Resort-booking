@@ -1730,6 +1730,10 @@ def save_base64_images(data):
     else:
         return data
 
+@app.route('/', methods=['GET'])
+def index():
+    return jsonify({"status": "active", "message": "Eden Spot Homestay API is running successfully!"}), 200
+
 @app.route('/api/<table>', methods=['GET'])
 def get_records(table):
     sheet = get_sheet()
