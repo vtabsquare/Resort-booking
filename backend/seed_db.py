@@ -8,6 +8,8 @@ load_dotenv()
 
 SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")
 CREDENTIALS_FILE = os.path.join(os.path.dirname(__file__), 'credentials', 'google-credentials.json')
+if not os.path.exists(CREDENTIALS_FILE):
+    CREDENTIALS_FILE = os.path.join(os.path.dirname(__file__), 'google-credentials.json')
 
 SCOPES = [
     'https://www.googleapis.com/auth/spreadsheets',
