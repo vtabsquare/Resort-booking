@@ -6,7 +6,7 @@ import requests
 import random
 import time
 from io import BytesIO
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, send_file
 from flask_cors import CORS
 import gspread
 from google.oauth2.service_account import Credentials
@@ -1682,10 +1682,43 @@ def col_letter(col_num):
         string_val = chr(65 + remainder) + string_val
     return string_val
 
+def save_image_to_db(base64_str):
+    try:
+        sheet = get_sheet()
+        if not sheet:
+            print("Failed to connect to sheet for image upload")
+            return None
+        
+        try:
+            worksheet = get_worksheet_by_name(sheet, 'UploadedImages')
+        except gspread.exceptions.WorksheetNotFound:
+            # Create the worksheet if it doesn't exist
+            print("Creating UploadedImages worksheet...")
+            worksheet = sheet.add_worksheet(title='UploadedImages', rows="10000", cols="3")
+            # Set headers
+            worksheet.update(values=[["image_id", "chunk_index", "data"]], range_name="A1:C1")
+            
+        image_id = f"db_{uuid.uuid4().hex}"
+        
+        # Split base64_str into chunks of 45000 characters
+        chunk_size = 45000
+        chunks = [base64_str[i:i+chunk_size] for i in range(0, len(base64_str), chunk_size)]
+        
+        rows = []
+        for index, chunk in enumerate(chunks):
+            rows.append([image_id, index, chunk])
+            
+        worksheet.append_rows(rows)
+        return f"/uploads/{image_id}"
+    except Exception as e:
+        print(f"Error saving image to DB: {e}")
+        return None
+
 def save_base64_images(data):
     """
     Recursively scans the input data (dict, list, or string) for base64 data URLs.
-    Saves them as files in the public/uploads folder, and returns the data with base64 URLs replaced by relative public paths.
+    Saves them to the database (UploadedImages sheet) with a fallback to local folder,
+    and returns the data with base64 URLs replaced by relative paths.
     """
     public_uploads_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'public', 'uploads'))
     if not os.path.exists(public_uploads_dir):
@@ -1697,6 +1730,12 @@ def save_base64_images(data):
         return [save_base64_images(item) for item in data]
     elif isinstance(data, str):
         if data.startswith("data:image/"):
+            # First attempt to save persistently in Google Sheets
+            db_path = save_image_to_db(data)
+            if db_path:
+                return db_path
+            
+            # Fallback to local file upload if DB save failed
             try:
                 # Format: data:image/png;base64,iVBORw0KGgoAAAANS...
                 header, encoded = data.split(",", 1)
@@ -1716,7 +1755,7 @@ def save_base64_images(data):
                 
                 return f"/uploads/{filename}"
             except Exception as e:
-                print(f"Error saving base64 image: {e}")
+                print(f"Error saving base64 image fallback: {e}")
                 return data
         elif (data.startswith("[") and data.endswith("]")) or (data.startswith("{") and data.endswith("}")):
             try:
@@ -1730,12 +1769,73 @@ def save_base64_images(data):
     else:
         return data
 
+# Simple in-memory cache for database images
+IMAGE_CACHE = {}
+
 @app.route('/', methods=['GET'])
 def index():
     return jsonify({"status": "active", "message": "Eden Spot Homestay API is running successfully!"}), 200
 
 @app.route('/uploads/<path:filename>', methods=['GET'])
 def serve_uploads(filename):
+    if filename.startswith("db_"):
+        global IMAGE_CACHE
+        if filename in IMAGE_CACHE:
+            cached = IMAGE_CACHE[filename]
+            return send_file(
+                BytesIO(cached["bytes"]),
+                mimetype=cached["mime_type"],
+                as_attachment=False
+            )
+            
+        try:
+            sheet = get_sheet()
+            if not sheet:
+                return "Failed to connect to database", 500
+                
+            worksheet = get_worksheet_by_name(sheet, 'UploadedImages')
+            records = worksheet.get_all_records()
+            
+            # Filter and sort chunks
+            chunks = [r for r in records if str(r.get('image_id', '')) == filename]
+            if not chunks:
+                return "Image not found", 404
+                
+            chunks.sort(key=lambda x: int(x.get('chunk_index', 0)))
+            
+            # Reconstruct base64
+            full_base64 = "".join([str(c.get('data', '')) for c in chunks])
+            
+            # Parse mime type and base64 encoded data
+            if "," in full_base64:
+                header, encoded = full_base64.split(",", 1)
+                mime_type = "image/png"
+                if "image/" in header:
+                    parts = header.split(";")
+                    for p in parts:
+                        if p.startswith("data:image/"):
+                            mime_type = p.replace("data:", "")
+                            
+                image_bytes = base64.b64decode(encoded)
+            else:
+                mime_type = "image/png"
+                image_bytes = base64.b64decode(full_base64)
+                
+            # Cache the result
+            IMAGE_CACHE[filename] = {
+                "mime_type": mime_type,
+                "bytes": image_bytes
+            }
+            
+            return send_file(
+                BytesIO(image_bytes),
+                mimetype=mime_type,
+                as_attachment=False
+            )
+        except Exception as e:
+            print(f"Error serving DB image {filename}: {e}")
+            return "Internal Server Error", 500
+
     uploads_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'public', 'uploads'))
     if not os.path.exists(uploads_dir):
         uploads_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'uploads'))
