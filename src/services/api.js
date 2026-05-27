@@ -6,12 +6,96 @@ if (rawApiBase && !rawApiBase.endsWith('/api') && !rawApiBase.endsWith('/api/'))
 }
 const API_BASE = rawApiBase;
 
+// Helper to resolve relative /uploads/ paths to absolute backend URLs in responses
+function resolveUploadUrls(data) {
+  if (!data) return data;
+  
+  const backendBase = API_BASE.replace(/\/api\/?$/, '');
+  const resolveStr = (str) => {
+    if (typeof str === 'string' && str.startsWith('/uploads/')) {
+      return `${backendBase}${str}`;
+    }
+    return str;
+  };
+  
+  if (typeof data === 'string') {
+    if ((data.startsWith('[') && data.endsWith(']')) || (data.startsWith('{') && data.endsWith('}'))) {
+      try {
+        const parsed = JSON.parse(data);
+        const resolved = resolveUploadUrls(parsed);
+        return JSON.stringify(resolved);
+      } catch (e) {
+        return resolveStr(data);
+      }
+    }
+    return resolveStr(data);
+  }
+  
+  if (Array.isArray(data)) {
+    return data.map(item => resolveUploadUrls(item));
+  }
+  
+  if (typeof data === 'object') {
+    const copy = {};
+    for (const key in data) {
+      if (Object.prototype.hasOwnProperty.call(data, key)) {
+        copy[key] = resolveUploadUrls(data[key]);
+      }
+    }
+    return copy;
+  }
+  
+  return data;
+}
+
+// Helper to strip the absolute backend URL from /uploads/ paths in requests
+function stripUploadUrls(data) {
+  if (!data) return data;
+  
+  const backendBase = API_BASE.replace(/\/api\/?$/, '');
+  const stripStr = (str) => {
+    if (typeof str === 'string' && str.startsWith(backendBase + '/uploads/')) {
+      return str.substring(backendBase.length);
+    }
+    return str;
+  };
+  
+  if (typeof data === 'string') {
+    if ((data.startsWith('[') && data.endsWith(']')) || (data.startsWith('{') && data.endsWith('}'))) {
+      try {
+        const parsed = JSON.parse(data);
+        const stripped = stripUploadUrls(parsed);
+        return JSON.stringify(stripped);
+      } catch (e) {
+        return stripStr(data);
+      }
+    }
+    return stripStr(data);
+  }
+  
+  if (Array.isArray(data)) {
+    return data.map(item => stripUploadUrls(item));
+  }
+  
+  if (typeof data === 'object') {
+    const copy = {};
+    for (const key in data) {
+      if (Object.prototype.hasOwnProperty.call(data, key)) {
+        copy[key] = stripUploadUrls(data[key]);
+      }
+    }
+    return copy;
+  }
+  
+  return data;
+}
+
 const api = {
   // Generic methods
   getAll: async (table) => {
     try {
       const response = await axios.get(`${API_BASE}/${table}`);
-      return response.data;
+      return resolveUploadUrls(response.data);
     } catch (error) {
       console.error(`Error fetching ${table}:`, error);
       return [];
@@ -20,8 +104,9 @@ const api = {
 
   create: async (table, data) => {
     try {
-      const response = await axios.post(`${API_BASE}/${table}`, data);
-      return response.data;
+      const strippedData = stripUploadUrls(data);
+      const response = await axios.post(`${API_BASE}/${table}`, strippedData);
+      return resolveUploadUrls(response.data);
     } catch (error) {
       console.error(`Error creating in ${table}:`, error);
       throw error;
@@ -30,8 +115,9 @@ const api = {
 
   update: async (table, id, data) => {
     try {
-      const response = await axios.put(`${API_BASE}/${table}/${id}`, data);
-      return response.data;
+      const strippedData = stripUploadUrls(data);
+      const response = await axios.put(`${API_BASE}/${table}/${id}`, strippedData);
+      return resolveUploadUrls(response.data);
     } catch (error) {
       console.error(`Error updating in ${table}:`, error);
       throw error;

@@ -123,16 +123,16 @@ export default function App() {
         }
         const API_BASE = rawApiBase;
         const [apiRooms, apiBookings, apiReviews, apiFood, apiSightseeing, apiSettings, apiGallery, apiAmenities, apiQrScanners, apiDiscounts] = await Promise.all([
-          fetch(`${API_BASE}/Rooms`).then(r => r.json()),
-          fetch(`${API_BASE}/Bookings`).then(r => r.json()),
-          fetch(`${API_BASE}/Reviews`).then(r => r.json()),
-          fetch(`${API_BASE}/Food`).then(r => r.json()),
-          fetch(`${API_BASE}/Sightseeing`).then(r => r.json()),
-          fetch(`${API_BASE}/settings`).then(r => r.json()),
-          fetch(`${API_BASE}/Gallery`).then(r => r.json()),
-          fetch(`${API_BASE}/Amenities`).then(r => r.json()),
-          fetch(`${API_BASE}/QRScanners`).then(r => r.json().catch(() => [])).catch(() => []),
-          fetch(`${API_BASE}/Discounts`).then(r => r.json().catch(() => [])).catch(() => []),
+          api.getAll('Rooms'),
+          api.getAll('Bookings'),
+          api.getAll('Reviews'),
+          api.getAll('Food'),
+          api.getAll('Sightseeing'),
+          api.getAll('settings'),
+          api.getAll('Gallery'),
+          api.getAll('Amenities'),
+          api.getAll('QRScanners'),
+          api.getAll('Discounts'),
         ]);
 
         if (apiRooms && apiRooms.length > 0) {

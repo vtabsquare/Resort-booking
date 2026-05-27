@@ -6,7 +6,7 @@ import requests
 import random
 import time
 from io import BytesIO
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import gspread
 from google.oauth2.service_account import Credentials
@@ -1733,6 +1733,13 @@ def save_base64_images(data):
 @app.route('/', methods=['GET'])
 def index():
     return jsonify({"status": "active", "message": "Eden Spot Homestay API is running successfully!"}), 200
+
+@app.route('/uploads/<path:filename>', methods=['GET'])
+def serve_uploads(filename):
+    uploads_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'public', 'uploads'))
+    if not os.path.exists(uploads_dir):
+        uploads_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'uploads'))
+    return send_from_directory(uploads_dir, filename)
 
 @app.route('/api/<table>', methods=['GET'])
 def get_records(table):
