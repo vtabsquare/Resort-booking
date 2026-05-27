@@ -1,6 +1,10 @@
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
+let rawApiBase = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
+if (rawApiBase && !rawApiBase.endsWith('/api') && !rawApiBase.endsWith('/api/')) {
+  rawApiBase = rawApiBase.replace(/\/+$/, '') + '/api';
+}
+const API_BASE = rawApiBase;
 
 const api = {
   // Generic methods

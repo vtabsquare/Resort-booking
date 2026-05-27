@@ -117,7 +117,11 @@ export default function App() {
   useEffect(() => {
     const fetchApiData = async () => {
       try {
-        const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
+        let rawApiBase = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
+        if (rawApiBase && !rawApiBase.endsWith('/api') && !rawApiBase.endsWith('/api/')) {
+          rawApiBase = rawApiBase.replace(/\/+$/, '') + '/api';
+        }
+        const API_BASE = rawApiBase;
         const [apiRooms, apiBookings, apiReviews, apiFood, apiSightseeing, apiSettings, apiGallery, apiAmenities, apiQrScanners, apiDiscounts] = await Promise.all([
           fetch(`${API_BASE}/Rooms`).then(r => r.json()),
           fetch(`${API_BASE}/Bookings`).then(r => r.json()),
