@@ -3155,75 +3155,42 @@ export default function AdminDashboard({
               <div className="bg-luxury-gold/5 border border-luxury-gold/30 rounded-2xl p-6 space-y-4">
                 <h4 className="text-sm font-bold text-luxury-navy">New Food Package</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <input value={newFood.name} onChange={e => setNewFood(p => ({ ...p, name: e.target.value }))} placeholder="Package Name (e.g. Full Board)" className="border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-luxury-gold" />
-                  <input type="number" value={newFood.price} onChange={e => setNewFood(p => ({ ...p, price: e.target.value }))} placeholder="Price ₹ per person / day" className="border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-luxury-gold" />
-                  <input value={newFood.description} onChange={e => setNewFood(p => ({ ...p, description: e.target.value }))} placeholder="Short description" className="border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-luxury-gold sm:col-span-2" />
-                </div>
-
-                <p className="text-xs font-bold text-luxury-gold uppercase tracking-wider">Meal Combos — 3 Veg + 3 Non-Veg per meal</p>
-
-                {/* ─── BREAKFAST ─────────────────────────────────── */}
-                <div className="border border-gray-200 rounded-xl overflow-hidden">
-                  <div className="px-3 py-2 bg-amber-50 flex items-center space-x-2">
-                    <span className="text-sm">🍳</span>
-                    <span className="text-xs font-bold text-luxury-navy uppercase tracking-wider">Breakfast</span>
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-gray-400">Meal Name</label>
+                    <input value={newFood.name} onChange={e => setNewFood(p => ({ ...p, name: e.target.value }))} placeholder="Standard Breakfast" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-luxury-gold bg-white text-gray-900" />
                   </div>
-                  <div className="p-3 grid grid-cols-2 gap-3">
-                    <div className="space-y-2">
-                      <p className="text-[9px] font-bold text-emerald-600 uppercase">🥦 Veg — 3 Combos</p>
-                      <input value={newFood.bfVeg1} onChange={e => setNewFood(p => ({ ...p, bfVeg1: e.target.value }))} placeholder="Veg Combo 1" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                      <input value={newFood.bfVeg2} onChange={e => setNewFood(p => ({ ...p, bfVeg2: e.target.value }))} placeholder="Veg Combo 2" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                      <input value={newFood.bfVeg3} onChange={e => setNewFood(p => ({ ...p, bfVeg3: e.target.value }))} placeholder="Veg Combo 3" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-[9px] font-bold text-rose-500 uppercase">🍗 Non-Veg — 3 Combos</p>
-                      <input value={newFood.bfNv1} onChange={e => setNewFood(p => ({ ...p, bfNv1: e.target.value }))} placeholder="Non-Veg Combo 1" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                      <input value={newFood.bfNv2} onChange={e => setNewFood(p => ({ ...p, bfNv2: e.target.value }))} placeholder="Non-Veg Combo 2" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                      <input value={newFood.bfNv3} onChange={e => setNewFood(p => ({ ...p, bfNv3: e.target.value }))} placeholder="Non-Veg Combo 3" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                    </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-gray-400">Meal Type</label>
+                    <select value={newFood.type} onChange={e => setNewFood(p => ({ ...p, type: e.target.value }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-luxury-gold bg-white text-gray-900">
+                      <option value="breakfast">Breakfast</option>
+                      <option value="lunch">Lunch</option>
+                      <option value="dinner">Dinner</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-gray-400">Price (₹ per person / day)</label>
+                    <input type="number" value={newFood.price} onChange={e => setNewFood(p => ({ ...p, price: e.target.value }))} placeholder="Price ₹" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-luxury-gold bg-white text-gray-900" />
+                  </div>
+                  <div>
+                    <label className="text-[10px] uppercase font-bold text-gray-400">Description</label>
+                    <input value={newFood.description} onChange={e => setNewFood(p => ({ ...p, description: e.target.value }))} placeholder="Description" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-luxury-gold bg-white text-gray-900" />
                   </div>
                 </div>
 
-                {/* ─── LUNCH ─────────────────────────────────────── */}
-                <div className="border border-gray-200 rounded-xl overflow-hidden">
-                  <div className="px-3 py-2 bg-emerald-50 flex items-center space-x-2">
-                    <span className="text-sm">🍛</span>
-                    <span className="text-xs font-bold text-luxury-navy uppercase tracking-wider">Lunch</span>
-                  </div>
-                  <div className="p-3 grid grid-cols-2 gap-3">
-                    <div className="space-y-2">
+                <div className="border-t border-gray-150 pt-3 space-y-3">
+                  <p className="text-[10px] font-bold text-luxury-gold uppercase tracking-wider">Meal Combos</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-1.5">
                       <p className="text-[9px] font-bold text-emerald-600 uppercase">🥦 Veg — 3 Combos</p>
-                      <input value={newFood.lnVeg1} onChange={e => setNewFood(p => ({ ...p, lnVeg1: e.target.value }))} placeholder="Veg Combo 1" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                      <input value={newFood.lnVeg2} onChange={e => setNewFood(p => ({ ...p, lnVeg2: e.target.value }))} placeholder="Veg Combo 2" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                      <input value={newFood.lnVeg3} onChange={e => setNewFood(p => ({ ...p, lnVeg3: e.target.value }))} placeholder="Veg Combo 3" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
+                      <input value={newFood.veg1} onChange={e => setNewFood(p => ({ ...p, veg1: e.target.value }))} placeholder="Veg Combo 1" className="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-[10px] focus:outline-none focus:border-luxury-gold bg-white text-gray-900" />
+                      <input value={newFood.veg2} onChange={e => setNewFood(p => ({ ...p, veg2: e.target.value }))} placeholder="Veg Combo 2" className="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-[10px] focus:outline-none focus:border-luxury-gold bg-white text-gray-900" />
+                      <input value={newFood.veg3} onChange={e => setNewFood(p => ({ ...p, veg3: e.target.value }))} placeholder="Veg Combo 3" className="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-[10px] focus:outline-none focus:border-luxury-gold bg-white text-gray-900" />
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-1.5">
                       <p className="text-[9px] font-bold text-rose-500 uppercase">🍗 Non-Veg — 3 Combos</p>
-                      <input value={newFood.lnNv1} onChange={e => setNewFood(p => ({ ...p, lnNv1: e.target.value }))} placeholder="Non-Veg Combo 1" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                      <input value={newFood.lnNv2} onChange={e => setNewFood(p => ({ ...p, lnNv2: e.target.value }))} placeholder="Non-Veg Combo 2" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                      <input value={newFood.lnNv3} onChange={e => setNewFood(p => ({ ...p, lnNv3: e.target.value }))} placeholder="Non-Veg Combo 3" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* ─── DINNER ─────────────────────────────────────── */}
-                <div className="border border-gray-200 rounded-xl overflow-hidden">
-                  <div className="px-3 py-2 bg-indigo-50 flex items-center space-x-2">
-                    <span className="text-sm">🌙</span>
-                    <span className="text-xs font-bold text-luxury-navy uppercase tracking-wider">Dinner</span>
-                  </div>
-                  <div className="p-3 grid grid-cols-2 gap-3">
-                    <div className="space-y-2">
-                      <p className="text-[9px] font-bold text-emerald-600 uppercase">🥦 Veg — 3 Combos</p>
-                      <input value={newFood.dnVeg1} onChange={e => setNewFood(p => ({ ...p, dnVeg1: e.target.value }))} placeholder="Veg Combo 1" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                      <input value={newFood.dnVeg2} onChange={e => setNewFood(p => ({ ...p, dnVeg2: e.target.value }))} placeholder="Veg Combo 2" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                      <input value={newFood.dnVeg3} onChange={e => setNewFood(p => ({ ...p, dnVeg3: e.target.value }))} placeholder="Veg Combo 3" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                    </div>
-                    <div className="space-y-2">
-                      <p className="text-[9px] font-bold text-rose-500 uppercase">🍗 Non-Veg — 3 Combos</p>
-                      <input value={newFood.dnNv1} onChange={e => setNewFood(p => ({ ...p, dnNv1: e.target.value }))} placeholder="Non-Veg Combo 1" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                      <input value={newFood.dnNv2} onChange={e => setNewFood(p => ({ ...p, dnNv2: e.target.value }))} placeholder="Non-Veg Combo 2" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
-                      <input value={newFood.dnNv3} onChange={e => setNewFood(p => ({ ...p, dnNv3: e.target.value }))} placeholder="Non-Veg Combo 3" className="w-full border border-gray-200 rounded-lg px-2.5 py-2 text-[11px] focus:outline-none focus:border-luxury-gold" />
+                      <input value={newFood.nv1} onChange={e => setNewFood(p => ({ ...p, nv1: e.target.value }))} placeholder="Non-Veg Combo 1" className="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-[10px] focus:outline-none focus:border-luxury-gold bg-white text-gray-900" />
+                      <input value={newFood.nv2} onChange={e => setNewFood(p => ({ ...p, nv2: e.target.value }))} placeholder="Non-Veg Combo 2" className="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-[10px] focus:outline-none focus:border-luxury-gold bg-white text-gray-900" />
+                      <input value={newFood.nv3} onChange={e => setNewFood(p => ({ ...p, nv3: e.target.value }))} placeholder="Non-Veg Combo 3" className="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-[10px] focus:outline-none focus:border-luxury-gold bg-white text-gray-900" />
                     </div>
                   </div>
                 </div>
@@ -3254,19 +3221,23 @@ export default function AdminDashboard({
                         </div>
                         {pkg.description && <p className="text-gray-500 text-xs">{pkg.description}</p>}
 
-                        {/* 3-Combo Grid Display */}
+                        {/* Combos Grid Display */}
                         <div className="space-y-2">
-                          {[
-                            { emoji:'🍳', label:'Breakfast', veg:[pkg.bfVeg1,pkg.bfVeg2,pkg.bfVeg3], nv:[pkg.bfNv1,pkg.bfNv2,pkg.bfNv3] },
-                            { emoji:'🍛', label:'Lunch',     veg:[pkg.lnVeg1,pkg.lnVeg2,pkg.lnVeg3], nv:[pkg.lnNv1,pkg.lnNv2,pkg.lnNv3] },
-                            { emoji:'🌙', label:'Dinner',    veg:[pkg.dnVeg1,pkg.dnVeg2,pkg.dnVeg3], nv:[pkg.dnNv1,pkg.dnNv2,pkg.dnNv3] },
-                          ].map(({ emoji, label, veg, nv }) => {
+                          {(() => {
+                            const typeMeta = {
+                              breakfast: { emoji: '🍳', label: 'Breakfast' },
+                              lunch: { emoji: '🍛', label: 'Lunch' },
+                              dinner: { emoji: '🌙', label: 'Dinner' }
+                            };
+                            const meta = typeMeta[pkg.type?.toLowerCase()] || { emoji: '🍽️', label: pkg.type || 'Meal' };
+                            const veg = [pkg.veg1, pkg.veg2, pkg.veg3];
+                            const nv = [pkg.nv1, pkg.nv2, pkg.nv3];
                             const hasVeg = veg.some(Boolean);
-                            const hasNv  = nv.some(Boolean);
+                            const hasNv = nv.some(Boolean);
                             if (!hasVeg && !hasNv) return null;
                             return (
-                              <div key={label} className="bg-gray-50 border border-gray-100 rounded-xl p-3">
-                                <p className="text-[10px] font-bold text-luxury-navy mb-2">{emoji} {label}</p>
+                              <div className="bg-gray-50 border border-gray-100 rounded-xl p-3">
+                                <p className="text-[10px] font-bold text-luxury-navy mb-2">{meta.emoji} {meta.label} Combos</p>
                                 <div className="grid grid-cols-2 gap-2">
                                   {hasVeg && (
                                     <div className="space-y-1">
@@ -3283,7 +3254,7 @@ export default function AdminDashboard({
                                 </div>
                               </div>
                             );
-                          })}
+                          })()}
                         </div>
 
                         {pkg.includes && pkg.includes.length > 0 && (
