@@ -117,17 +117,18 @@ export default function App() {
   useEffect(() => {
     const fetchApiData = async () => {
       try {
+        const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
         const [apiRooms, apiBookings, apiReviews, apiFood, apiSightseeing, apiSettings, apiGallery, apiAmenities, apiQrScanners, apiDiscounts] = await Promise.all([
-          fetch('http://localhost:5000/api/Rooms').then(r => r.json()),
-          fetch('http://localhost:5000/api/Bookings').then(r => r.json()),
-          fetch('http://localhost:5000/api/Reviews').then(r => r.json()),
-          fetch('http://localhost:5000/api/Food').then(r => r.json()),
-          fetch('http://localhost:5000/api/Sightseeing').then(r => r.json()),
-          fetch('http://localhost:5000/api/settings').then(r => r.json()),
-          fetch('http://localhost:5000/api/Gallery').then(r => r.json()),
-          fetch('http://localhost:5000/api/Amenities').then(r => r.json()),
-          fetch('http://localhost:5000/api/QRScanners').then(r => r.json().catch(() => [])).catch(() => []),
-          fetch('http://localhost:5000/api/Discounts').then(r => r.json().catch(() => [])).catch(() => []),
+          fetch(`${API_BASE}/Rooms`).then(r => r.json()),
+          fetch(`${API_BASE}/Bookings`).then(r => r.json()),
+          fetch(`${API_BASE}/Reviews`).then(r => r.json()),
+          fetch(`${API_BASE}/Food`).then(r => r.json()),
+          fetch(`${API_BASE}/Sightseeing`).then(r => r.json()),
+          fetch(`${API_BASE}/settings`).then(r => r.json()),
+          fetch(`${API_BASE}/Gallery`).then(r => r.json()),
+          fetch(`${API_BASE}/Amenities`).then(r => r.json()),
+          fetch(`${API_BASE}/QRScanners`).then(r => r.json().catch(() => [])).catch(() => []),
+          fetch(`${API_BASE}/Discounts`).then(r => r.json().catch(() => [])).catch(() => []),
         ]);
 
         if (apiRooms && apiRooms.length > 0) {
