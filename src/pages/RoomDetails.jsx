@@ -25,6 +25,7 @@ export default function RoomDetails({
   activeDiscountType = 'standard',
   discountLow = 0,
   discountStandard = 0,
+  discountPeak = 0,
   gstRate = 12,
   googleMapsEmbed = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3935.1322238461943!2d76.42159637587787!3d9.505086890577532!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b087df8646b9a89%3A0xb3ba1a166cb3f9cf!2sKumarakom%20Backwaters!5e0!3m2!1sen!2sin!4v1716200000000!5m2!1sen!2sin'
 }) {
