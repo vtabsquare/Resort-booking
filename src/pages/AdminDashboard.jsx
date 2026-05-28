@@ -263,15 +263,56 @@ export default function AdminDashboard({
   qrScanners = [],
   setQrScanners,
   gstRate,
-  setGstRate
+  setGstRate,
+  facebookLink,
+  setFacebookLink,
+  instagramLink,
+  setInstagramLink,
+  googleMapsEmbed,
+  setGoogleMapsEmbed
 }) {
 
   const [activeTab, setActiveTab] = useState('overview');
   const [localGstRate, setLocalGstRate] = useState(gstRate);
+  const [localFacebook, setLocalFacebook] = useState(facebookLink);
+  const [localInstagram, setLocalInstagram] = useState(instagramLink);
+  const [localGoogleMaps, setLocalGoogleMaps] = useState(googleMapsEmbed);
 
   useEffect(() => {
     setLocalGstRate(gstRate);
   }, [gstRate]);
+
+  useEffect(() => {
+    setLocalFacebook(facebookLink);
+  }, [facebookLink]);
+
+  useEffect(() => {
+    setLocalInstagram(instagramLink);
+  }, [instagramLink]);
+
+  useEffect(() => {
+    setLocalGoogleMaps(googleMapsEmbed);
+  }, [googleMapsEmbed]);
+
+  const handleUpdateResortLinks = async (e) => {
+    e.preventDefault();
+    try {
+      setFacebookLink(localFacebook);
+      setInstagramLink(localInstagram);
+      setGoogleMapsEmbed(localGoogleMaps);
+
+      await Promise.all([
+        api.update('settings', 'facebookLink', { key: 'facebookLink', value: localFacebook }),
+        api.update('settings', 'instagramLink', { key: 'instagramLink', value: localInstagram }),
+        api.update('settings', 'googleMapsEmbed', { key: 'googleMapsEmbed', value: localGoogleMaps })
+      ]);
+      alert('🌟 Successfully updated socials and map settings!');
+    } catch (err) {
+      console.error('Failed to update resort links:', err);
+      alert('Error updating resort settings. Please try again.');
+    }
+  };
+
   const [members, setMembers] = useState([]);
   const [loadingMembers, setLoadingMembers] = useState(false);
   const [bookingSearchId, setBookingSearchId] = useState('');
@@ -2699,6 +2740,62 @@ export default function AdminDashboard({
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* Resort Links & Map Settings Control Panel */}
+            <div className="bg-white p-6 rounded-2xl border border-gray-200/30 shadow-xs space-y-4 admin-card-hover">
+              <div>
+                <h4 className="font-serif text-sm font-bold text-luxury-navy uppercase tracking-wider">Resort Social Links & Map Settings</h4>
+                <p className="text-xs text-gray-400">Manage social media accounts and Google Maps embed locations dynamically.</p>
+              </div>
+
+              <form onSubmit={handleUpdateResortLinks} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-1.5 text-left">
+                    <label className="block text-[9px] uppercase font-bold text-gray-400">Instagram Profile URL</label>
+                    <input 
+                      type="text" 
+                      value={localInstagram} 
+                      onChange={e => setLocalInstagram(e.target.value)} 
+                      placeholder="E.g. https://instagram.com/edenspot" 
+                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-luxury-navy focus:outline-none focus:border-luxury-gold bg-white text-left font-semibold" 
+                    />
+                  </div>
+                  <div className="space-y-1.5 text-left">
+                    <label className="block text-[9px] uppercase font-bold text-gray-400">Facebook Page URL</label>
+                    <input 
+                      type="text" 
+                      value={localFacebook} 
+                      onChange={e => setLocalFacebook(e.target.value)} 
+                      placeholder="E.g. https://facebook.com/edenspot" 
+                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-luxury-navy focus:outline-none focus:border-luxury-gold bg-white text-left font-semibold" 
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5 text-left">
+                  <label className="block text-[9px] uppercase font-bold text-gray-400">Google Maps Embed URL (Iframe Src)</label>
+                  <textarea 
+                    value={localGoogleMaps} 
+                    onChange={e => setLocalGoogleMaps(e.target.value)} 
+                    placeholder="Paste maps embed URL (starts with https://www.google.com/maps/embed...)" 
+                    rows={3}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs text-luxury-navy focus:outline-none focus:border-luxury-gold bg-white text-left font-mono font-medium leading-normal" 
+                  />
+                  <p className="text-[10px] text-gray-450 font-light leading-normal">
+                    💡 <strong>To get this URL</strong>: Go to Google Maps &rarr; Search location &rarr; Click <strong>Share</strong> &rarr; Select <strong>Embed a map</strong> &rarr; Copy the link inside the <code>src="..."</code> attribute of the iframe.
+                  </p>
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button 
+                    type="submit" 
+                    className="bg-luxury-navy hover:bg-primary-600 text-white text-xs uppercase tracking-wider font-bold px-6 py-3 rounded-xl border border-luxury-gold/30 hover:border-luxury-gold transition-all duration-200 cursor-pointer"
+                  >
+                    Update Links & Map
+                  </button>
+                </div>
+              </form>
             </div>
 
             {/* Add New Room Button */}

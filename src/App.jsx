@@ -106,6 +106,11 @@ export default function App() {
   });
   const [qrScanners, setQrScanners] = useState([]);
   
+  // Resort Links & Map Embed States
+  const [facebookLink, setFacebookLink] = useState('#');
+  const [instagramLink, setInstagramLink] = useState('#');
+  const [googleMapsEmbed, setGoogleMapsEmbed] = useState('https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3935.1322238461943!2d76.42159637587787!3d9.505086890577532!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b087df8646b9a89%3A0xb3ba1a166cb3f9cf!2sKumarakom%20Backwaters!5e0!3m2!1sen!2sin!4v1716200000000!5m2!1sen!2sin');
+  
   // Discount States
   const [discountEnabled, setDiscountEnabled] = useState(false);
   const [activeDiscountType, setActiveDiscountType] = useState('standard');
@@ -221,6 +226,18 @@ export default function App() {
           const gstRecord = apiSettings.find(s => s.key === 'gstRate');
           if (gstRecord) {
             setGstRate(parseFloat(gstRecord.value) || 12);
+          }
+          const fbRecord = apiSettings.find(s => s.key === 'facebookLink');
+          if (fbRecord && fbRecord.value) {
+            setFacebookLink(fbRecord.value);
+          }
+          const igRecord = apiSettings.find(s => s.key === 'instagramLink');
+          if (igRecord && igRecord.value) {
+            setInstagramLink(igRecord.value);
+          }
+          const mapsRecord = apiSettings.find(s => s.key === 'googleMapsEmbed');
+          if (mapsRecord && mapsRecord.value) {
+            setGoogleMapsEmbed(mapsRecord.value);
           }
         }
 
@@ -356,6 +373,7 @@ export default function App() {
             discountStandard={discountStandard}
             discountPeak={discountPeak}
             gstRate={gstRate}
+            googleMapsEmbed={googleMapsEmbed}
           />
         );
       case 'checkout':
@@ -428,6 +446,12 @@ export default function App() {
             setQrScanners={setQrScanners}
             gstRate={gstRate}
             setGstRate={setGstRate}
+            facebookLink={facebookLink}
+            setFacebookLink={setFacebookLink}
+            instagramLink={instagramLink}
+            setInstagramLink={setInstagramLink}
+            googleMapsEmbed={googleMapsEmbed}
+            setGoogleMapsEmbed={setGoogleMapsEmbed}
           />
         );
       default:
@@ -464,7 +488,7 @@ export default function App() {
 
       {/* Render global footer only if not on the Admin tab */}
       {currentView !== 'admin' && (
-        <Footer setView={setView} />
+        <Footer setView={setView} facebookLink={facebookLink} instagramLink={instagramLink} />
       )}
 
       {/* GUEST LOGIN & PORTAL SIGN-IN MODAL */}
