@@ -1930,10 +1930,100 @@ export default function AdminDashboard({
     const confirmed = bookings.filter(b => b.status === 'Confirmed' || b.status === 'Checked Out').length;
     const cancelled = bookings.filter(b => b.status === 'Cancelled').length;
     const revenue = bookings.filter(b => b.status === 'Confirmed' || b.status === 'Checked Out').reduce((s, b) => s + b.totalAmount, 0);
-    const occupancy = Math.min(100, total > 0 ? Math.round((confirmed / Math.max(rooms.length, 1)) * 100) : 0);
+    
+    // Calculate weekly occupancy: rolling 7 days starting from today (current date)
+    const parseLocalDate = (str) => {
+      if (!str) return null;
+      const parts = String(str).split('-');
+      if (parts.length < 3) return null;
+      return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    };
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const rangeStart = today;
+    const rangeEnd = new Date(today);
+    rangeEnd.setDate(today.getDate() + 7);
+    
+    let weeklyNightsBooked = 0;
+    const totalAvailableRoomNights = 7 * Math.max(rooms.length, 1);
+    
+    bookings.forEach(b => {
+      if (b.status !== 'Confirmed' && b.status !== 'Checked Out') return;
+      
+      const checkIn = parseLocalDate(b.checkIn);
+      const checkOut = parseLocalDate(b.checkOut);
+      if (!checkIn || !checkOut) return;
+      
+      const overlapStart = new Date(Math.max(checkIn.getTime(), rangeStart.getTime()));
+      const overlapEnd = new Date(Math.min(checkOut.getTime(), rangeEnd.getTime()));
+      
+      if (overlapStart < overlapEnd) {
+        const diffDays = Math.round((overlapEnd.getTime() - overlapStart.getTime()) / (1000 * 60 * 60 * 24));
+        weeklyNightsBooked += diffDays;
+      }
+    });
+
+    const occupancy = Math.min(100, Math.round((weeklyNightsBooked / totalAvailableRoomNights) * 100));
     const cancellationRate = total > 0 ? Math.round((cancelled / total) * 100) : 0;
+    
     return { total, pending, confirmed, cancelled, revenue, occupancy, cancellationRate };
   }, [bookings, rooms]);
+
+  // Real-time room status logic for current date (today)
+  const todayRoomStatus = useMemo(() => {
+    const parseLocalDate = (str) => {
+      if (!str) return null;
+      const parts = String(str).split('-');
+      if (parts.length < 3) return null;
+      return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    };
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return rooms.map(r => {
+      // Find active booking for today (check-in <= today < check-out)
+      const activeBooking = bookings.find(b => {
+        if (b.status !== 'Confirmed' && b.status !== 'Checked Out') return false;
+        if (b.roomName !== r.name) return false;
+        
+        const checkIn = parseLocalDate(b.checkIn);
+        const checkOut = parseLocalDate(b.checkOut);
+        if (!checkIn || !checkOut) return false;
+        
+        return today >= checkIn && today < checkOut;
+      });
+
+      // Find next check-in
+      let nextBooking = null;
+      if (!activeBooking) {
+        const futureBookings = bookings
+          .filter(b => {
+            if (b.status !== 'Confirmed' && b.status !== 'Checked Out') return false;
+            if (b.roomName !== r.name) return false;
+            const checkIn = parseLocalDate(b.checkIn);
+            return checkIn && checkIn > today;
+          })
+          .sort((a, b) => {
+            const dateA = parseLocalDate(a.checkIn);
+            const dateB = parseLocalDate(b.checkIn);
+            return dateA.getTime() - dateB.getTime();
+          });
+        if (futureBookings.length > 0) {
+          nextBooking = futureBookings[0];
+        }
+      }
+
+      return {
+        room: r,
+        isOccupied: !!activeBooking,
+        activeBooking,
+        nextBooking
+      };
+    });
+  }, [rooms, bookings]);
 
   // ── Si  // ── Status badge helper ──────────────────────────────────────────────────────
   const statusBadge = (status) => {
@@ -2350,7 +2440,7 @@ export default function AdminDashboard({
               {[
                 { label: 'Gross Revenue',   value: `₹${metrics.revenue.toLocaleString('en-IN')}`, sub: '+18.4% this month', subColor: 'text-emerald-600', icon: <IndianRupee className="h-5 w-5" />, bg: 'bg-emerald-50 border-emerald-100 text-emerald-500' },
                 { label: 'Total Bookings',  value: metrics.total,  sub: `Pending: ${metrics.pending}`, subColor: 'text-luxury-gold', icon: <FileSpreadsheet className="h-5 w-5" />, bg: 'bg-blue-50 border-blue-100 text-blue-500' },
-                { label: 'Occupancy Rate',  value: `${metrics.occupancy}%`, sub: 'Based on active rooms', subColor: 'text-gray-400', icon: <Users className="h-5 w-5" />, bg: 'bg-luxury-gold/10 border-luxury-gold/30 text-luxury-gold' },
+                { label: 'Occupancy Rate',  value: `${metrics.occupancy}%`, sub: 'Current week occupancy', subColor: 'text-gray-400', icon: <Users className="h-5 w-5" />, bg: 'bg-luxury-gold/10 border-luxury-gold/30 text-luxury-gold' },
                 { label: 'Cancellation Rate', value: `${metrics.cancellationRate}%`, sub: `${metrics.cancelled} Cancelled bookings`, subColor: 'text-rose-500 font-bold', icon: <XCircle className="h-5 w-5" />, bg: 'bg-rose-50 border-rose-100 text-rose-500' },
               ].map((c, i) => (
                 <div key={i} className="bg-white p-6 rounded-2xl border border-gray-200/30 shadow-xs flex items-center justify-between admin-card-hover cursor-default">
@@ -2454,6 +2544,84 @@ export default function AdminDashboard({
                 ))}
               </div>
             </div>
+
+            {/* Today's Room Occupancy Status Panel */}
+            <div className="bg-white p-6 rounded-2xl border border-gray-200/30 shadow-xs admin-card-hover space-y-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-3 border-b border-gray-100 gap-3">
+                <div>
+                  <h4 className="font-serif text-sm font-bold text-luxury-navy uppercase tracking-wider">Today's Room Occupancy Status</h4>
+                  <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wider mt-0.5">Real-time status check for current date ({new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' })})</p>
+                </div>
+                <div className="text-xs font-semibold px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-xl text-luxury-navy font-mono">
+                  Occupied: {todayRoomStatus.filter(x => x.isOccupied).length} / {rooms.length} Rooms
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+                {todayRoomStatus.map((status, index) => {
+                  const r = status.room;
+                  return (
+                    <div key={index} className={`p-5 rounded-2xl border transition-all ${status.isOccupied ? 'border-rose-100 bg-rose-50/20 shadow-[0_4px_12px_rgba(244,63,94,0.04)]' : 'border-emerald-100 bg-emerald-50/10 shadow-[0_4px_12px_rgba(16,185,129,0.02)]'} flex flex-col justify-between space-y-4`}>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-start">
+                          <div className="space-y-1">
+                            <span className="text-[9px] uppercase tracking-wider text-gray-400 font-bold">{r.category}</span>
+                            <h5 className="font-serif text-xs font-bold text-luxury-navy leading-tight">{r.name}</h5>
+                          </div>
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${status.isOccupied ? 'bg-rose-50 text-rose-500 border border-rose-100' : 'bg-emerald-50 text-emerald-500 border border-emerald-100'}`}>
+                            <BedDouble className="h-4 w-4" />
+                          </div>
+                        </div>
+
+                        <div className="flex items-center">
+                          {status.isOccupied ? (
+                            <span className="flex items-center text-[9px] font-bold text-rose-700 uppercase tracking-wider bg-rose-50 border border-rose-200/50 px-2 py-0.5 rounded-full">
+                              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5 animate-pulse" />
+                              Occupied
+                            </span>
+                          ) : (
+                            <span className="flex items-center text-[9px] font-bold text-emerald-700 uppercase tracking-wider bg-emerald-50 border border-emerald-200/50 px-2 py-0.5 rounded-full">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
+                              Vacant
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="pt-3 border-t border-gray-150/40 text-xs space-y-2">
+                        {status.isOccupied ? (
+                          <div className="space-y-1">
+                            <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Current Guest</p>
+                            <p className="font-bold text-luxury-navy">{status.activeBooking.guestName}</p>
+                            <p className="text-[9.5px] font-medium text-gray-500 leading-normal font-mono">
+                              In: {status.activeBooking.checkIn}<br/>
+                              Out: {status.activeBooking.checkOut}<br/>
+                              ID: PNR-{status.activeBooking.id.replace('B-', '')}
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="space-y-1">
+                            <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">Next Booking</p>
+                            {status.nextBooking ? (
+                              <>
+                                <p className="font-bold text-luxury-navy">{status.nextBooking.guestName}</p>
+                                <p className="text-[9.5px] font-medium text-gray-500 leading-normal font-mono">
+                                  Check-in: {status.nextBooking.checkIn}<br/>
+                                  ID: PNR-{status.nextBooking.id.replace('B-', '')}
+                                </p>
+                              </>
+                            ) : (
+                              <p className="text-gray-450 italic text-[10.5px] font-light">No upcoming stays scheduled</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
           </div>
         )}
 
