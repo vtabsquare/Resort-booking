@@ -1,6 +1,19 @@
 import axios from 'axios';
 
-let rawApiBase = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
+let rawApiBase = import.meta.env.VITE_API_BASE;
+if (!rawApiBase) {
+  if (typeof window !== 'undefined' && window.location.hostname.endsWith('.onrender.com')) {
+    const host = window.location.hostname;
+    if (host.includes('-frontend')) {
+      rawApiBase = `https://${host.replace('-frontend', '-backend')}/api`;
+    } else {
+      rawApiBase = 'http://localhost:5000/api';
+    }
+  } else {
+    rawApiBase = 'http://localhost:5000/api';
+  }
+}
+
 if (rawApiBase && !rawApiBase.endsWith('/api') && !rawApiBase.endsWith('/api/')) {
   rawApiBase = rawApiBase.replace(/\/+$/, '') + '/api';
 }
