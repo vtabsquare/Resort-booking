@@ -343,11 +343,11 @@ def generate_voucher_html(booking):
         
         bill_rows_html += f"""
         <tr>
-            <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 4px 6px; border-bottom: 1px solid #e2e8f0; font-size: 9px; line-height: 1.2;">
                 <strong>Room Stay ({room_name})</strong><br/>
-                <small style="color: #64748b;">₹{int(bill.get('roomRate', 0)):,} x {bill.get('nights', nights)} nights x {bill.get('rooms', 1)} room</small>
+                <small style="color: #64748b; font-size: 8px;">₹{int(bill.get('roomRate', 0)):,} x {bill.get('nights', nights)} nights x {bill.get('rooms', 1)} room</small>
             </td>
-            <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: bold; color: #0b1528;">
+            <td style="padding: 4px 6px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: bold; color: #0b1528; font-size: 9.5px; vertical-align: middle;">
                 ₹{int(room_cost):,}
             </td>
         </tr>
@@ -356,11 +356,11 @@ def generate_voucher_html(booking):
         if food_cost > 0:
             bill_rows_html += f"""
             <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 4px 6px; border-bottom: 1px solid #e2e8f0; font-size: 9px; line-height: 1.2;">
                     <strong>Meal / Food Packages</strong><br/>
-                    <small style="color: #64748b;">{booking.get('food', 'Custom plans')}</small>
+                    <small style="color: #64748b; font-size: 8px;">{booking.get('food', 'Custom plans')}</small>
                 </td>
-                <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: bold; color: #0b1528;">
+                <td style="padding: 4px 6px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: bold; color: #0b1528; font-size: 9.5px; vertical-align: middle;">
                     ₹{int(food_cost):,}
                 </td>
             </tr>
@@ -369,11 +369,11 @@ def generate_voucher_html(booking):
         if sightseeing_cost > 0:
             bill_rows_html += f"""
             <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 4px 6px; border-bottom: 1px solid #e2e8f0; font-size: 9px; line-height: 1.2;">
                     <strong>Kerala Jeep Tour Package</strong><br/>
-                    <small style="color: #64748b;">{booking.get('sightseeing', 'Excursions')}</small>
+                    <small style="color: #64748b; font-size: 8px;">{booking.get('sightseeing', 'Excursions')}</small>
                 </td>
-                <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: bold; color: #0b1528;">
+                <td style="padding: 4px 6px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: bold; color: #0b1528; font-size: 9.5px; vertical-align: middle;">
                     ₹{int(sightseeing_cost):,}
                 </td>
             </tr>
@@ -384,11 +384,11 @@ def generate_voucher_html(booking):
             extra_price = extra.get('price', 0)
             bill_rows_html += f"""
             <tr>
-                <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 4px 6px; border-bottom: 1px solid #e2e8f0; font-size: 9px; line-height: 1.2;">
                     <strong>{extra_name}</strong><br/>
-                    <small style="color: #64748b;">Custom Addition / Incidentals</small>
+                    <small style="color: #64748b; font-size: 8px;">Custom Addition / Incidentals</small>
                 </td>
-                <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: bold; color: #0b1528;">
+                <td style="padding: 4px 6px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: bold; color: #0b1528; font-size: 9.5px; vertical-align: middle;">
                     ₹{int(extra_price):,}
                 </td>
             </tr>
@@ -404,11 +404,11 @@ def generate_voucher_html(booking):
             total = 0
         bill_rows_html += f"""
         <tr>
-            <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 4px 6px; border-bottom: 1px solid #e2e8f0; font-size: 9px; line-height: 1.2;">
                 <strong>Room Stay & Services ({room_name})</strong><br/>
-                <small style="color: #64748b;">{guests} · {check_in} to {check_out}</small>
+                <small style="color: #64748b; font-size: 8px;">{guests} · {check_in} to {check_out}</small>
             </td>
-            <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: bold; color: #0b1528;">
+            <td style="padding: 4px 6px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: bold; color: #0b1528; font-size: 9.5px; vertical-align: middle;">
                 ₹{int(subtotal):,}
             </td>
         </tr>
@@ -418,10 +418,10 @@ def generate_voucher_html(booking):
     if discount > 0:
         discount_row_html = f"""
         <tr style="color: #10b981;">
-            <td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 4px 6px; border-bottom: 1px solid #e2e8f0; font-size: 9px;">
                 <strong>Discount Applied</strong>
             </td>
-            <td style="padding: 8px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: bold;">
+            <td style="padding: 4px 6px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: bold; font-size: 9.5px;">
                 -₹{int(discount):,}
             </td>
         </tr>
@@ -434,12 +434,16 @@ def generate_voucher_html(booking):
         <meta charset="utf-8">
         <title>Eden Spot Booking Voucher</title>
         <style>
+            @page {{
+                size: a4;
+                margin: 4mm 6mm;
+            }}
             body {{
                 font-family: Helvetica, Arial, sans-serif;
                 color: #1a1e26;
                 background-color: #ffffff;
                 margin: 0;
-                padding: 10px;
+                padding: 0;
             }}
             .container {{
                 max-width: 650px;
@@ -448,120 +452,107 @@ def generate_voucher_html(booking):
                 border: 1px solid #e2e8f0;
                 overflow: hidden;
             }}
-            .header-banner {{
+            .header-banner-table {{
+                width: 100%;
                 background-color: #0b1528;
-                padding: 16px 20px;
                 border-bottom: 3px solid #c5a880;
                 color: #ffffff;
-            }}
-            .header-left {{
-                display: inline-block;
-                width: 55%;
-                vertical-align: top;
-            }}
-            .header-right {{
-                display: inline-block;
-                width: 40%;
-                text-align: right;
-                vertical-align: top;
+                padding: 10px 15px;
             }}
             .brand-logo {{
                 font-family: Georgia, serif;
                 color: #ffffff;
-                font-size: 18px;
+                font-size: 16px;
                 font-weight: 800;
-                letter-spacing: 2px;
+                letter-spacing: 1.5px;
                 text-transform: uppercase;
                 margin: 0;
             }}
             .brand-sub {{
                 color: #c5a880;
-                font-size: 8px;
-                letter-spacing: 1px;
+                font-size: 7.5px;
+                letter-spacing: 0.5px;
                 text-transform: uppercase;
-                margin-top: 2px;
+                margin-top: 1px;
             }}
-            .voucher-title h2 {{
-                font-size: 13px;
+            .voucher-title-h2 {{
+                font-size: 11px;
                 margin: 0;
                 text-transform: uppercase;
-                letter-spacing: 2px;
+                letter-spacing: 1.5px;
                 color: #c5a880;
             }}
-            .voucher-title p {{
-                font-size: 10px;
+            .voucher-title-p {{
+                font-size: 8.5px;
                 color: #a0a6b5;
-                margin: 3px 0 0 0;
+                margin: 2px 0 0 0;
             }}
             .content {{
-                padding: 15px 20px;
+                padding: 8px 12px;
             }}
             .property-card {{
                 border: 1px solid #e2e8f0;
-                padding: 12px;
-                margin-bottom: 12px;
+                padding: 8px 10px;
+                margin-bottom: 6px;
                 background: #fafafb;
-                position: relative;
             }}
             .property-name {{
                 font-family: Georgia, serif;
-                font-size: 15px;
+                font-size: 13px;
                 font-weight: bold;
                 color: #0b1528;
-                margin: 0 0 4px 0;
+                margin: 0 0 2px 0;
             }}
             .property-details {{
-                font-size: 10px;
+                font-size: 8.5px;
                 color: #64748b;
-                line-height: 1.4;
+                line-height: 1.3;
             }}
             .stamp-confirmed {{
-                position: absolute;
-                top: 12px;
-                right: 12px;
-                border: 2px dashed #10b981;
+                border: 1.5px dashed #10b981;
                 color: #10b981;
-                padding: 4px 8px;
-                font-size: 8px;
+                padding: 2px 5px;
+                font-size: 7.5px;
                 font-weight: bold;
                 text-transform: uppercase;
-                letter-spacing: 1px;
+                letter-spacing: 0.5px;
+                background-color: #f0fdf4;
             }}
             .info-table {{
                 width: 100%;
                 border-collapse: collapse;
-                margin-bottom: 12px;
+                margin-bottom: 6px;
             }}
             .info-table td {{
-                padding: 8px 10px;
+                padding: 4px 6px;
                 border: 1px solid #e2e8f0;
                 vertical-align: top;
                 width: 50%;
             }}
             .section-title {{
-                font-size: 9px;
+                font-size: 8px;
                 font-weight: bold;
                 color: #c5a880;
                 text-transform: uppercase;
-                letter-spacing: 1px;
-                margin-bottom: 4px;
+                letter-spacing: 0.5px;
+                margin-bottom: 2px;
             }}
             .info-value {{
-                font-size: 11px;
+                font-size: 9.5px;
                 color: #0b1528;
                 font-weight: bold;
-                line-height: 1.3;
+                line-height: 1.2;
             }}
             .info-sub {{
-                font-size: 10px;
+                font-size: 8px;
                 color: #64748b;
                 font-weight: normal;
-                margin-top: 2px;
+                margin-top: 1px;
             }}
             .billing-table {{
                 width: 100%;
                 border-collapse: collapse;
-                margin-top: 8px;
+                margin-top: 2px;
             }}
             .billing-total {{
                 background-color: #fafafb;
@@ -569,29 +560,29 @@ def generate_voucher_html(booking):
             }}
             .important-info {{
                 background-color: #f8fafc;
-                border-left: 4px solid #c5a880;
-                padding: 10px 14px;
-                font-size: 10px;
+                border-left: 3px solid #c5a880;
+                padding: 6px 10px;
+                font-size: 8.5px;
                 color: #475569;
-                line-height: 1.5;
-                margin-top: 12px;
+                line-height: 1.35;
+                margin-top: 6px;
             }}
             .important-info h4 {{
-                margin: 0 0 4px 0;
+                margin: 0 0 2px 0;
                 text-transform: uppercase;
                 color: #0b1528;
-                font-size: 10px;
+                font-size: 8.5px;
                 letter-spacing: 0.5px;
             }}
             .important-info ul {{
                 margin: 0;
-                padding-left: 14px;
+                padding-left: 10px;
             }}
             .footer-info {{
                 background-color: #0b1528;
-                padding: 12px;
+                padding: 8px;
                 text-align: center;
-                font-size: 9px;
+                font-size: 8px;
                 color: #8c93a3;
                 border-top: 1px solid #e2e8f0;
             }}
@@ -603,26 +594,36 @@ def generate_voucher_html(booking):
     </head>
     <body>
         <div class="container">
-            <div class="header-banner">
-                <div class="header-left">
-                    <h1 class="brand-logo">Eden Spot Homestay</h1>
-                    <div class="brand-sub">Just a Peaceful home away from Home</div>
-                </div>
-                <div class="header-right voucher-title">
-                    <h2>Booking Voucher</h2>
-                    <p>Booking ID: <strong style="color: #ffffff; font-family: monospace;">{booking_id}</strong></p>
-                    <p>PNR: <strong style="color: #ffffff; font-family: monospace;">PNR-{booking_id.replace('B-', '')}</strong></p>
-                </div>
-            </div>
+            <table class="header-banner-table">
+                <tr>
+                    <td style="width: 55%; vertical-align: middle; border: none; padding: 0; background-color: #0b1528;">
+                        <h1 class="brand-logo">Eden Spot Homestay</h1>
+                        <div class="brand-sub">Just a Peaceful home away from Home</div>
+                    </td>
+                    <td style="width: 45%; text-align: right; vertical-align: middle; border: none; padding: 0; background-color: #0b1528;">
+                        <h2 class="voucher-title-h2">Booking Voucher</h2>
+                        <p class="voucher-title-p">Booking ID: <strong style="color: #ffffff; font-family: monospace;">{booking_id}</strong></p>
+                        <p class="voucher-title-p">PNR: <strong style="color: #ffffff; font-family: monospace;">PNR-{booking_id.replace('B-', '')}</strong></p>
+                    </td>
+                </tr>
+            </table>
             
             <div class="content">
                 <div class="property-card">
-                    <h3 class="property-name">{room_name}</h3>
-                    <div class="property-details">
-                        The House of Shalom, Puthachivayal, Marayoor, Idukki, Kerala 685620<br/>
-                        +91 94462 20966, +91 94469 33963 | edenspot.homestay@gmail.com
-                    </div>
-                    <div class="stamp-confirmed">Thank You Confirmed</div>
+                    <table style="width: 100%; border: none; padding: 0; background-color: transparent;">
+                        <tr>
+                            <td style="width: 75%; vertical-align: top; border: none; padding: 0;">
+                                <h3 class="property-name">{room_name}</h3>
+                                <div class="property-details">
+                                    The House of Shalom, Puthachivayal, Marayoor, Idukki, Kerala 685620<br/>
+                                    +91 94462 20966, +91 94469 33963 | edenspot.homestay@gmail.com
+                                </div>
+                            </td>
+                            <td style="width: 25%; vertical-align: middle; text-align: right; border: none; padding: 0;">
+                                <span class="stamp-confirmed">Thank You Confirmed</span>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
                 
                 <table class="info-table">
@@ -633,7 +634,7 @@ def generate_voucher_html(booking):
                                 Check-in: {check_in}<br/>
                                 <span class="info-sub">After 12:00 PM</span>
                             </div>
-                            <div class="info-value" style="margin-top: 6px;">
+                            <div class="info-value" style="margin-top: 4px;">
                                 Check-out: {check_out}<br/>
                                 <span class="info-sub">Before 11:00 AM</span>
                             </div>
@@ -641,7 +642,7 @@ def generate_voucher_html(booking):
                         <td>
                             <div class="section-title">Guest Information</div>
                             <div class="info-value">{guest_name}</div>
-                            <div class="info-sub">
+                            <div class="info-sub" style="line-height: 1.3; margin-top: 2px;">
                                 Email: {customer_email}<br/>
                                 Phone: {phone}<br/>
                                 Guests: {guests}
@@ -653,31 +654,31 @@ def generate_voucher_html(booking):
                 <div class="section-title">Invoice & Itemized Billing</div>
                 <table class="billing-table">
                     <thead>
-                        <tr style="background-color: #fafafb; border-bottom: 2px solid #e2e8f0; font-size: 9px; font-weight: bold; text-transform: uppercase; color: #64748b; text-align: left;">
-                            <th style="padding: 6px 8px;">Description</th>
-                            <th style="padding: 6px 8px; text-align: right;">Amount</th>
+                        <tr style="background-color: #fafafb; border-bottom: 2px solid #e2e8f0; font-size: 8px; font-weight: bold; text-transform: uppercase; color: #64748b; text-align: left;">
+                            <th style="padding: 4px 6px;">Description</th>
+                            <th style="padding: 4px 6px; text-align: right;">Amount</th>
                         </tr>
                     </thead>
-                    <tbody style="font-size: 11px; color: #334155;">
+                    <tbody style="font-size: 9px; color: #334155;">
                         {bill_rows_html}
                         {discount_row_html}
                         
                         <tr class="billing-total">
-                            <td style="padding: 8px; font-weight: bold; color: #0b1528;">Subtotal</td>
-                            <td style="padding: 8px; font-weight: bold; text-align: right; color: #0b1528;">₹{int(subtotal):,}</td>
+                            <td style="padding: 4px 6px; font-weight: bold; color: #0b1528;">Subtotal</td>
+                            <td style="padding: 4px 6px; font-weight: bold; text-align: right; color: #0b1528;">₹{int(subtotal):,}</td>
                         </tr>
                         <tr class="billing-total">
-                            <td style="padding: 8px; font-weight: bold; color: #64748b; font-size: 10px;">Luxury GST Tax ({int(rate) if rate.is_integer() else rate}%)</td>
-                            <td style="padding: 8px; font-weight: bold; text-align: right; color: #64748b; font-size: 10px;">₹{int(tax):,}</td>
+                            <td style="padding: 4px 6px; font-weight: bold; color: #64748b; font-size: 8.5px;">Luxury GST Tax ({int(rate) if rate.is_integer() else rate}%)</td>
+                            <td style="padding: 4px 6px; font-weight: bold; text-align: right; color: #64748b; font-size: 8.5px;">₹{int(tax):,}</td>
                         </tr>
                         <tr class="billing-total" style="border-top: 2px double #c5a880;">
-                            <td style="padding: 10px 8px; font-weight: bold; color: #0b1528; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Grand Total</td>
-                            <td style="padding: 10px 8px; font-weight: bold; text-align: right; color: #c5a880; font-size: 16px; font-family: Georgia, serif;">₹{int(total):,}</td>
+                            <td style="padding: 5px 6px; font-weight: bold; color: #0b1528; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.5px;">Grand Total</td>
+                            <td style="padding: 5px 6px; font-weight: bold; text-align: right; color: #c5a880; font-size: 13px; font-family: Georgia, serif;">₹{int(total):,}</td>
                         </tr>
                     </tbody>
                 </table>
                 
-                <p style="font-size: 10px; color: #64748b; font-style: italic; margin-top: 10px; text-align: center;">
+                <p style="font-size: 8px; color: #64748b; font-style: italic; margin-top: 6px; text-align: center; margin-bottom: 2px;">
                     * The booking is confirmed. Balance or outstanding amounts are payable at check-out.
                 </p>
                 
@@ -692,8 +693,8 @@ def generate_voucher_html(booking):
             </div>
             
             <div class="footer-info">
-                <p>Eden Spot Homestay, Marayoor, Idukki, Kerala, India</p>
-                <p>Need support? Contact us 24/7: <a href="mailto:edenspot.homestay@gmail.com">edenspot.homestay@gmail.com</a> | +91 94462 20966, +91 94469 33963</p>
+                <p style="margin: 0 0 2px 0;">Eden Spot Homestay, Marayoor, Idukki, Kerala, India</p>
+                <p style="margin: 0;">Need support? Contact us 24/7: <a href="mailto:edenspot.homestay@gmail.com">edenspot.homestay@gmail.com</a> | +91 94462 20966, +91 94469 33963</p>
             </div>
         </div>
     </body>

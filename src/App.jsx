@@ -101,7 +101,9 @@ export default function App() {
   const [gstRate, setGstRate] = useState(12);
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [amenities, setAmenities] = useState([]);
-  const [landingPageBackground, setLandingPageBackground] = useState('/landing_page.webp');
+  const [landingPageBackground, setLandingPageBackground] = useState(() => {
+    return localStorage.getItem('landingPageBackground') || '/landing_page.webp';
+  });
   const [qrScanners, setQrScanners] = useState([]);
   
   // Discount States
@@ -112,6 +114,13 @@ export default function App() {
   const [discountPeak, setDiscountPeak] = useState(1500);
 
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+  // Sync landingPageBackground to localStorage to avoid flash on reload
+  useEffect(() => {
+    if (landingPageBackground) {
+      localStorage.setItem('landingPageBackground', landingPageBackground);
+    }
+  }, [landingPageBackground]);
 
   // Fetch real data from Google Sheets API
   useEffect(() => {
