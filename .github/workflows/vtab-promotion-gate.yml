@@ -1,0 +1,16 @@
+name: VTAB Promotion Gate
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  promotion-source:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate develop branch
+        if: github.event_name == 'pull_request'
+        run: test "${{ github.head_ref }}" = "develop"
+      - name: Record candidate
+        run: echo "Validated VTAB DEV to PROD promotion candidate."
