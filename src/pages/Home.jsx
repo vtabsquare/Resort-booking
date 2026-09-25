@@ -41,6 +41,10 @@ export default function Home({ setView, setSelectedRoomId, searchParams, setSear
             Enter your dates and guest count below to check real-time availability and customize your homestay experience.
           </p>
 
+          <div className="flex justify-center pt-2">
+            <a href="https://www.vtabsquare.com/?demo=1&product=resort-booking&source=eden-spot-resort-booking" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-xl border border-white/30 bg-white/15 px-5 py-3 text-sm font-bold uppercase tracking-wider text-white backdrop-blur-md transition-all hover:bg-white hover:text-luxury-navy">Contact for Demo ↗</a>
+          </div>
+
           {/* Search Bar container - desktop absolute and mobile inline */}
           <div className="w-full max-w-6xl mx-auto px-4 pt-6">
             <SearchBar onSearch={handleSearch} initialParams={searchParams} />

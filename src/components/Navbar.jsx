@@ -71,6 +71,7 @@ export default function Navbar({ currentView, setView, onBookClick, customerUser
                 {item.label}
               </button>
             ))}
+            <a href="https://www.vtabsquare.com/?demo=1&product=resort-booking&source=eden-spot-resort-booking" target="_blank" rel="noopener noreferrer" className={`font-sans text-xs uppercase tracking-widest font-bold px-3.5 py-2 rounded-xl transition-all ${currentView === 'home' ? 'bg-white text-luxury-navy hover:bg-luxury-lightgold' : 'bg-luxury-navy text-white hover:bg-luxury-gold'}`}>Contact for Demo</a>
             {customerUser ? (
               <button
                 onClick={() => handleNavClick('my-bookings')}
